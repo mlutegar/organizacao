@@ -116,6 +116,54 @@ export default function TasksPage() {
     }
   }
 
+  async function toggleFocus(taskId: string, currentFocusStatus: boolean) {
+    // Se está tentando marcar como foco
+    if (!currentFocusStatus) {
+      // Verificar quantas tarefas foco já existem para hoje
+      const today = new Date().toISOString().split('T')[0]
+      const { data: focusTasks, error: countError } = await supabase
+        .from('tasks')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('is_focus', true)
+        .eq('focus_date', today)
+
+      if (countError) {
+        alert('Erro ao verificar tarefas foco: ' + countError.message)
+        return
+      }
+
+      if (focusTasks && focusTasks.length >= 5) {
+        alert('Você já tem 5 tarefas foco para hoje. Remova uma tarefa foco antes de adicionar outra.')
+        return
+      }
+
+      // Marcar como foco com a data de hoje
+      const { error } = await supabase
+        .from('tasks')
+        .update({ is_focus: true, focus_date: today })
+        .eq('id', taskId)
+
+      if (error) {
+        alert('Erro ao marcar tarefa como foco: ' + error.message)
+      } else {
+        loadTasks()
+      }
+    } else {
+      // Remover do foco
+      const { error } = await supabase
+        .from('tasks')
+        .update({ is_focus: false, focus_date: null })
+        .eq('id', taskId)
+
+      if (error) {
+        alert('Erro ao remover tarefa do foco: ' + error.message)
+      } else {
+        loadTasks()
+      }
+    }
+  }
+
   async function deleteTask(taskId: string) {
     if (!confirm('Tem certeza que deseja excluir esta tarefa?')) return
 
@@ -184,6 +232,10 @@ export default function TasksPage() {
     )
   }
 
+  // Filtrar tarefas foco de hoje
+  const today = new Date().toISOString().split('T')[0]
+  const focusTasks = tasks.filter(task => task.is_focus && task.focus_date === today)
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -197,6 +249,35 @@ export default function TasksPage() {
           Sair
         </button>
       </div>
+
+      {focusTasks.length > 0 && (
+        <div className={styles.focusSection}>
+          <h2 className={styles.focusSectionTitle}>
+            ⭐ Tarefas Foco de Hoje ({focusTasks.length}/5)
+          </h2>
+          <div className={styles.focusTasksList}>
+            {focusTasks.map((task) => (
+              <div
+                key={task.id}
+                className={`${styles.focusTaskItem} ${task.completed ? styles.focusTaskCompleted : ''}`}
+              >
+                <div className={styles.focusTaskContent}>
+                  <h4>{task.title}</h4>
+                  {task.description && <p>{task.description}</p>}
+                </div>
+                <div className={styles.focusTaskActions}>
+                  <button
+                    onClick={() => toggleTask(task.id, task.completed)}
+                    className={styles.focusTaskToggle}
+                  >
+                    {task.completed ? '✓' : '○'}
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className={styles.content}>
         <div className={styles.createCard}>
@@ -293,6 +374,16 @@ export default function TasksPage() {
                     </div>
                   </div>
                   <div className={styles.taskActions}>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        toggleFocus(task.id, task.is_focus)
+                      }}
+                      className={task.is_focus ? styles.focusButtonActive : styles.focusButton}
+                      title={task.is_focus ? 'Remover do foco' : 'Marcar como foco do dia'}
+                    >
+                      {task.is_focus ? '⭐ Foco' : '☆ Foco'}
+                    </button>
                     <button
                       onClick={(e) => {
                         e.stopPropagation()

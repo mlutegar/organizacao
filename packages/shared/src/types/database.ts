@@ -43,6 +43,8 @@ export interface Database {
           description: string | null
           completed: boolean
           due_date: string | null
+          is_focus: boolean
+          focus_date: string | null
           created_at: string
           updated_at: string
         }
@@ -53,6 +55,8 @@ export interface Database {
           description?: string | null
           completed?: boolean
           due_date?: string | null
+          is_focus?: boolean
+          focus_date?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -63,6 +67,8 @@ export interface Database {
           description?: string | null
           completed?: boolean
           due_date?: string | null
+          is_focus?: boolean
+          focus_date?: string | null
           created_at?: string
           updated_at?: string
         }

@@ -1,6 +1,6 @@
-# Tarefa foco (1)
+# Sidebar (1)
 
-Quero que tenha um botão que faz com que eu diga que aquela tarefa vai ser o foco do dia. Vamos ter no máximo 5 tarefas foco no mesmo dia.
+Eu quero adicionar um sidebar no meu site. Funciona da mesma forma que um menu. Ele começa desativado, mas eu posso
+ativar a qualquer momente, Nesse sidebar, quero que tenha inicialmente o botão de adicionar tarefa.
 
 @packages/web/src/app/tasks/page.tsx
-

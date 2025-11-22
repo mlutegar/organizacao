@@ -60,6 +60,109 @@
   box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
 
+.focusSection {
+  max-width: 1200px;
+  margin: 0 auto 30px;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(251, 191, 36, 0.2);
+  border: 2px solid #fbbf24;
+}
+
+.focusSectionTitle {
+  margin: 0 0 20px 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: #92400e;
+  text-align: center;
+}
+
+.focusTasksList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.focusTaskItem {
+  background: white;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.2s;
+  border: 2px solid transparent;
+}
+
+.focusTaskItem:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: #fbbf24;
+}
+
+.focusTaskCompleted {
+  opacity: 0.6;
+  background: #f0f9ff;
+}
+
+.focusTaskContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.focusTaskContent h4 {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.focusTaskContent p {
+  margin: 0;
+  font-size: 12px;
+  color: #666;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.focusTaskActions {
+  flex-shrink: 0;
+}
+
+.focusTaskToggle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid #fbbf24;
+  background: white;
+  color: #f59e0b;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.focusTaskToggle:hover {
+  background: #fbbf24;
+  color: white;
+  transform: scale(1.1);
+}
+
+.focusTaskCompleted .focusTaskToggle {
+  background: #10b981;
+  border-color: #10b981;
+  color: white;
+}
+
 .content {
   max-width: 1200px;
   margin: 0 auto;
@@ -284,8 +387,11 @@
 .taskActions {
   display: flex;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
+.focusButton,
+.focusButtonActive,
 .toggleButton,
 .deleteButton {
   padding: 8px 16px;
@@ -295,6 +401,32 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+}
+
+.focusButton {
+  background-color: #f3f4f6;
+  color: #6b7280;
+  border: 2px solid #d1d5db;
+}
+
+.focusButton:hover {
+  background-color: #fef3c7;
+  color: #92400e;
+  border-color: #fbbf24;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(251, 191, 36, 0.2);
+}
+
+.focusButtonActive {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  color: white;
+  border: 2px solid #f59e0b;
+}
+
+.focusButtonActive:hover {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
 }
 
 .toggleButton {
