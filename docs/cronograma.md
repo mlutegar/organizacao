@@ -1,11 +1,15 @@
 # 📅 Cronograma de Desenvolvimento
 
+## Tarefas soltas
+- Tirar a versão mobile, permanecer só com a versão desktop inicialmente.
+- 
+
 ## **FASE 1
 **Dia 1-2: Setup Inicial (16h)**
-[x] Configurar repositório Git
-[x] Inicializar projetos (React Native + Next.js)
+✅ Configurar repositório Git
+✅ Inicializar projetos (React Native + Next.js)
 - Configurar TypeScript e ESLint
-[x] Setup do banco de dados (escolher entre Firebase/Supabase/PostgreSQL)
+✅ Setup do banco de dados (escolher entre Firebase/Supabase/PostgreSQL)
 - Configurar o versel.
 - Configurar ambiente de desenvolvimento
 

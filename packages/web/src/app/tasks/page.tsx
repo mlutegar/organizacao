@@ -15,6 +15,10 @@ export default function TasksPage() {
   const [newTaskTitle, setNewTaskTitle] = useState('')
   const [newTaskDescription, setNewTaskDescription] = useState('')
   const [creating, setCreating] = useState(false)
+  const [editingTask, setEditingTask] = useState<Task | null>(null)
+  const [editTitle, setEditTitle] = useState('')
+  const [editDescription, setEditDescription] = useState('')
+  const [updating, setUpdating] = useState(false)
   const router = useRouter()
   const supabase = createClient()
 
@@ -123,6 +127,43 @@ export default function TasksPage() {
     }
   }
 
+  function openEditModal(task: Task) {
+    setEditingTask(task)
+    setEditTitle(task.title)
+    setEditDescription(task.description || '')
+  }
+
+  function closeEditModal() {
+    setEditingTask(null)
+    setEditTitle('')
+    setEditDescription('')
+  }
+
+  async function updateTask(e: React.FormEvent) {
+    e.preventDefault()
+
+    if (!editingTask || !editTitle.trim()) return
+
+    setUpdating(true)
+
+    const { error } = await supabase
+      .from('tasks')
+      .update({
+        title: editTitle,
+        description: editDescription || null,
+      })
+      .eq('id', editingTask.id)
+
+    if (error) {
+      alert('Erro ao atualizar tarefa: ' + error.message)
+    } else {
+      closeEditModal()
+      loadTasks()
+    }
+
+    setUpdating(false)
+  }
+
   async function handleSignOut() {
     await supabase.auth.signOut()
     router.push('/auth')
@@ -204,7 +245,11 @@ export default function TasksPage() {
                   key={task.id}
                   className={`${styles.taskCard} ${task.completed ? styles.completed : ''}`}
                 >
-                  <div className={styles.taskContent}>
+                  <div
+                    className={styles.taskContent}
+                    onClick={() => openEditModal(task)}
+                    style={{ cursor: 'pointer' }}
+                  >
                     <div className={styles.taskHeader}>
                       <h3>{task.title}</h3>
                       <span className={styles.taskStatus}>
@@ -222,13 +267,19 @@ export default function TasksPage() {
                   </div>
                   <div className={styles.taskActions}>
                     <button
-                      onClick={() => toggleTask(task.id, task.completed)}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        toggleTask(task.id, task.completed)
+                      }}
                       className={styles.toggleButton}
                     >
                       {task.completed ? 'Reabrir' : 'Concluir'}
                     </button>
                     <button
-                      onClick={() => deleteTask(task.id)}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        deleteTask(task.id)
+                      }}
                       className={styles.deleteButton}
                     >
                       Excluir
@@ -240,6 +291,64 @@ export default function TasksPage() {
           )}
         </div>
       </div>
+
+      {editingTask && (
+        <div className={styles.modalOverlay} onClick={closeEditModal}>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h2>Editar Tarefa</h2>
+              <button onClick={closeEditModal} className={styles.closeButton}>
+                ×
+              </button>
+            </div>
+
+            <form onSubmit={updateTask} className={styles.form}>
+              <div className={styles.inputGroup}>
+                <label htmlFor="edit-title">Título*</label>
+                <input
+                  id="edit-title"
+                  type="text"
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  placeholder="Ex: Estudar React"
+                  required
+                  disabled={updating}
+                />
+              </div>
+
+              <div className={styles.inputGroup}>
+                <label htmlFor="edit-description">Descrição (opcional)</label>
+                <textarea
+                  id="edit-description"
+                  value={editDescription}
+                  onChange={(e) => setEditDescription(e.target.value)}
+                  placeholder="Detalhes sobre a tarefa..."
+                  rows={3}
+                  disabled={updating}
+                />
+              </div>
+
+              <div className={styles.modalActions}>
+                <button
+                  type="button"
+                  onClick={closeEditModal}
+                  className={styles.cancelButton}
+                  disabled={updating}
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className={styles.saveButton}
+                  disabled={updating || !editTitle.trim()}
+                >
+                  {updating ? 'Salvando...' : 'Salvar'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
