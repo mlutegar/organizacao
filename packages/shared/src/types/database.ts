@@ -35,6 +35,35 @@ export interface Database {
           updated_at?: string
         }
       }
+      projects: {
+        Row: {
+          id: string
+          user_id: string
+          name: string
+          description: string | null
+          color: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          name: string
+          description?: string | null
+          color?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          name?: string
+          description?: string | null
+          color?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
       tasks: {
         Row: {
           id: string
@@ -45,6 +74,7 @@ export interface Database {
           due_date: string | null
           is_focus: boolean
           focus_date: string | null
+          project_id: string | null
           created_at: string
           updated_at: string
         }
@@ -57,6 +87,7 @@ export interface Database {
           due_date?: string | null
           is_focus?: boolean
           focus_date?: string | null
+          project_id?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -69,6 +100,7 @@ export interface Database {
           due_date?: string | null
           is_focus?: boolean
           focus_date?: string | null
+          project_id?: string | null
           created_at?: string
           updated_at?: string
         }

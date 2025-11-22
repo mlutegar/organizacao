@@ -291,7 +291,8 @@
 }
 
 .inputGroup input,
-.inputGroup textarea {
+.inputGroup textarea,
+.inputGroup select {
   padding: 12px 16px;
   border: 2px solid #e0e0e0;
   border-radius: 8px;
@@ -301,14 +302,16 @@
 }
 
 .inputGroup input:focus,
-.inputGroup textarea:focus {
+.inputGroup textarea:focus,
+.inputGroup select:focus {
   outline: none;
   border-color: #667eea;
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .inputGroup input:disabled,
-.inputGroup textarea:disabled {
+.inputGroup textarea:disabled,
+.inputGroup select:disabled {
   background-color: #f5f5f5;
   cursor: not-allowed;
 }
@@ -426,6 +429,20 @@
   font-size: 14px;
   color: #666;
   line-height: 1.5;
+}
+
+.taskProject {
+  margin: 8px 0;
+}
+
+.projectBadge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  background-color: #6366f1;
+  color: white;
 }
 
 .taskMeta {

@@ -8,22 +8,31 @@ import styles from './tasks.module.css'
 import Sidebar from '@/components/Sidebar'
 
 type Task = Database['public']['Tables']['tasks']['Row']
+type Project = Database['public']['Tables']['projects']['Row']
 
 export default function TasksPage() {
   const [tasks, setTasks] = useState<Task[]>([])
+  const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
   const [user, setUser] = useState<any>(null)
   const [newTaskTitle, setNewTaskTitle] = useState('')
   const [newTaskDescription, setNewTaskDescription] = useState('')
   const [newTaskDueDate, setNewTaskDueDate] = useState('')
+  const [newTaskProjectId, setNewTaskProjectId] = useState('')
   const [creating, setCreating] = useState(false)
   const [editingTask, setEditingTask] = useState<Task | null>(null)
   const [editTitle, setEditTitle] = useState('')
   const [editDescription, setEditDescription] = useState('')
   const [editDueDate, setEditDueDate] = useState('')
+  const [editProjectId, setEditProjectId] = useState('')
   const [updating, setUpdating] = useState(false)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [showCreateForm, setShowCreateForm] = useState(false)
+  const [showCreateProjectForm, setShowCreateProjectForm] = useState(false)
+  const [newProjectName, setNewProjectName] = useState('')
+  const [newProjectDescription, setNewProjectDescription] = useState('')
+  const [newProjectColor, setNewProjectColor] = useState('#6366f1')
+  const [creatingProject, setCreatingProject] = useState(false)
   const router = useRouter()
   const supabase = createClient()
 
@@ -41,6 +50,7 @@ export default function TasksPage() {
 
     setUser(user)
     loadTasks()
+    loadProjects()
 
     // Setup realtime subscription
     const channel = supabase
@@ -78,6 +88,19 @@ export default function TasksPage() {
     setLoading(false)
   }
 
+  async function loadProjects() {
+    const { data, error } = await supabase
+      .from('projects')
+      .select('*')
+      .order('name', { ascending: true })
+
+    if (error) {
+      console.error('Erro ao carregar projetos:', error)
+    } else {
+      setProjects(data || [])
+    }
+  }
+
   async function createTask(e: React.FormEvent) {
     e.preventDefault()
 
@@ -91,6 +114,7 @@ export default function TasksPage() {
         title: newTaskTitle,
         description: newTaskDescription || null,
         due_date: newTaskDueDate || null,
+        project_id: newTaskProjectId || null,
         user_id: user.id,
       })
 
@@ -100,6 +124,7 @@ export default function TasksPage() {
       setNewTaskTitle('')
       setNewTaskDescription('')
       setNewTaskDueDate('')
+      setNewTaskProjectId('')
       setShowCreateForm(false)
       loadTasks()
     }
@@ -188,6 +213,7 @@ export default function TasksPage() {
     setEditTitle(task.title)
     setEditDescription(task.description || '')
     setEditDueDate(task.due_date || '')
+    setEditProjectId(task.project_id || '')
   }
 
   function closeEditModal() {
@@ -195,6 +221,7 @@ export default function TasksPage() {
     setEditTitle('')
     setEditDescription('')
     setEditDueDate('')
+    setEditProjectId('')
   }
 
   async function updateTask(e: React.FormEvent) {
@@ -210,6 +237,7 @@ export default function TasksPage() {
         title: editTitle,
         description: editDescription || null,
         due_date: editDueDate || null,
+        project_id: editProjectId || null,
       })
       .eq('id', editingTask.id)
 
@@ -223,9 +251,50 @@ export default function TasksPage() {
     setUpdating(false)
   }
 
+  async function createProject(e: React.FormEvent) {
+    e.preventDefault()
+
+    if (!newProjectName.trim()) return
+
+    setCreatingProject(true)
+
+    const { error } = await supabase
+      .from('projects')
+      .insert({
+        name: newProjectName,
+        description: newProjectDescription || null,
+        color: newProjectColor,
+        user_id: user.id,
+      })
+
+    if (error) {
+      alert('Erro ao criar projeto: ' + error.message)
+    } else {
+      setNewProjectName('')
+      setNewProjectDescription('')
+      setNewProjectColor('#6366f1')
+      setShowCreateProjectForm(false)
+      loadProjects()
+    }
+
+    setCreatingProject(false)
+  }
+
   async function handleSignOut() {
     await supabase.auth.signOut()
     router.push('/auth')
+  }
+
+  function getProjectName(projectId: string | null): string | null {
+    if (!projectId) return null
+    const project = projects.find(p => p.id === projectId)
+    return project ? project.name : null
+  }
+
+  function getProjectColor(projectId: string | null): string | null {
+    if (!projectId) return null
+    const project = projects.find(p => p.id === projectId)
+    return project?.color || null
   }
 
   if (loading) {
@@ -273,6 +342,19 @@ export default function TasksPage() {
                 <div className={styles.focusTaskContent}>
                   <h4>{task.title}</h4>
                   {task.description && <p>{task.description}</p>}
+                  {task.project_id && getProjectName(task.project_id) && (
+                    <span
+                      className={styles.projectBadge}
+                      style={{
+                        backgroundColor: getProjectColor(task.project_id) || '#6366f1',
+                        color: '#fff',
+                        fontSize: '0.75rem',
+                        marginTop: '0.25rem'
+                      }}
+                    >
+                      {getProjectName(task.project_id)}
+                    </span>
+                  )}
                 </div>
                 <div className={styles.focusTaskActions}>
                   <button
@@ -317,6 +399,19 @@ export default function TasksPage() {
                     </div>
                     {task.description && (
                       <p className={styles.taskDescription}>{task.description}</p>
+                    )}
+                    {task.project_id && getProjectName(task.project_id) && (
+                      <div className={styles.taskProject}>
+                        <span
+                          className={styles.projectBadge}
+                          style={{
+                            backgroundColor: getProjectColor(task.project_id) || '#6366f1',
+                            color: '#fff'
+                          }}
+                        >
+                          {getProjectName(task.project_id)}
+                        </span>
+                      </div>
                     )}
                     <div className={styles.taskMeta}>
                       <small>
@@ -417,6 +512,23 @@ export default function TasksPage() {
                 />
               </div>
 
+              <div className={styles.inputGroup}>
+                <label htmlFor="edit-project">Projeto (opcional)</label>
+                <select
+                  id="edit-project"
+                  value={editProjectId}
+                  onChange={(e) => setEditProjectId(e.target.value)}
+                  disabled={updating}
+                >
+                  <option value="">Nenhum projeto</option>
+                  {projects.map((project) => (
+                    <option key={project.id} value={project.id}>
+                      {project.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               <div className={styles.modalActions}>
                 <button
                   type="button"
@@ -441,7 +553,7 @@ export default function TasksPage() {
 
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)}>
         <div className={styles.sidebarContent}>
-          {!showCreateForm ? (
+          {!showCreateForm && !showCreateProjectForm ? (
             <div className={styles.menuActions}>
               <button
                 onClick={() => setShowCreateForm(true)}
@@ -450,8 +562,15 @@ export default function TasksPage() {
                 <span className={styles.menuActionIcon}>+</span>
                 <span>Adicionar Tarefa</span>
               </button>
+              <button
+                onClick={() => setShowCreateProjectForm(true)}
+                className={styles.menuActionButton}
+              >
+                <span className={styles.menuActionIcon}>📁</span>
+                <span>Criar Projeto</span>
+              </button>
             </div>
-          ) : (
+          ) : showCreateForm ? (
             <div>
               <div className={styles.formHeader}>
                 <h2>Criar Nova Tarefa</h2>
@@ -499,12 +618,92 @@ export default function TasksPage() {
                   />
                 </div>
 
+                <div className={styles.inputGroup}>
+                  <label htmlFor="project">Projeto (opcional)</label>
+                  <select
+                    id="project"
+                    value={newTaskProjectId}
+                    onChange={(e) => setNewTaskProjectId(e.target.value)}
+                    disabled={creating}
+                  >
+                    <option value="">Nenhum projeto</option>
+                    {projects.map((project) => (
+                      <option key={project.id} value={project.id}>
+                        {project.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
                 <button
                   type="submit"
                   className={styles.createButton}
                   disabled={creating || !newTaskTitle.trim()}
                 >
                   {creating ? 'Criando...' : 'Criar Tarefa'}
+                </button>
+              </form>
+            </div>
+          ) : (
+            <div>
+              <div className={styles.formHeader}>
+                <h2>Criar Novo Projeto</h2>
+                <button
+                  onClick={() => setShowCreateProjectForm(false)}
+                  className={styles.backButton}
+                >
+                  ← Voltar
+                </button>
+              </div>
+              <form onSubmit={createProject} className={styles.form}>
+                <div className={styles.inputGroup}>
+                  <label htmlFor="projectName">Nome do Projeto*</label>
+                  <input
+                    id="projectName"
+                    type="text"
+                    value={newProjectName}
+                    onChange={(e) => setNewProjectName(e.target.value)}
+                    placeholder="Ex: Projeto Pessoal"
+                    required
+                    disabled={creatingProject}
+                  />
+                </div>
+
+                <div className={styles.inputGroup}>
+                  <label htmlFor="projectDescription">Descrição (opcional)</label>
+                  <textarea
+                    id="projectDescription"
+                    value={newProjectDescription}
+                    onChange={(e) => setNewProjectDescription(e.target.value)}
+                    placeholder="Detalhes sobre o projeto..."
+                    rows={3}
+                    disabled={creatingProject}
+                  />
+                </div>
+
+                <div className={styles.inputGroup}>
+                  <label htmlFor="projectColor">Cor do Projeto</label>
+                  <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                    <input
+                      id="projectColor"
+                      type="color"
+                      value={newProjectColor}
+                      onChange={(e) => setNewProjectColor(e.target.value)}
+                      disabled={creatingProject}
+                      style={{ width: '60px', height: '40px', cursor: 'pointer', border: '2px solid #e0e0e0', borderRadius: '8px' }}
+                    />
+                    <span style={{ fontSize: '14px', color: '#666' }}>
+                      {newProjectColor}
+                    </span>
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  className={styles.createButton}
+                  disabled={creatingProject || !newProjectName.trim()}
+                >
+                  {creatingProject ? 'Criando...' : 'Criar Projeto'}
                 </button>
               </form>
             </div>

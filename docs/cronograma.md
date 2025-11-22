@@ -6,7 +6,65 @@
 - A primeira tela de tarefas, tem que ser a tela "entrada", que está todas as tarefas que o usuario coloca. O ideal, é
   que esse campo seja vazio, mas aqui que o usuario vai colocar as tarefas de forma rapida. Mas, no final ele tem que
   tirar um tempo dele para se organizar certinho.
-- 
+- Criar um bot no whatsapp que ao falar com ele, ele cria a tarefa no supabase.
+```
+Essa é uma ótima ideia de projeto de automação. Para que isso funcione, você precisará de três pilares: o **Supabase** (banco de dados), a **WhatsApp Cloud API** (interface de mensagem) e um **Backend/Middleware** (seu código que liga os dois).
+
+Aqui estão as subtarefas divididas por etapas lógicas de desenvolvimento:
+
+### 1. Configuração do Banco de Dados (Supabase)
+Esta é a etapa mais fácil e deve ser feita primeiro para garantir que você tem onde salvar os dados.
+
+* [ ] **Criar Projeto:** Iniciar um novo projeto no painel do Supabase.
+* [ ] **Modelagem da Tabela:** Criar uma tabela chamada `tasks` (ou `tarefas`).
+    * Colunas sugeridas: `id` (int8/uuid), `content` (text), `status` (text/boolean), `phone_number` (text - para saber quem criou), `created_at` (timestamp).
+* [ ] **Segurança (RLS):** Configurar as Row Level Security policies (ou desativar temporariamente para testes, mas não recomendado para produção).
+* [ ] **Obter Credenciais:** Copiar a `Project URL` e a `anon public key` (ou `service_role` se for apenas backend) nas configurações de API.
+
+---
+
+### 2. Configuração do WhatsApp (Meta Developers)
+Você usará a API oficial da Meta (antigo Facebook), que é gratuita para baixos volumes.
+
+* [ ] **Criar App na Meta:** Acessar o *Meta for Developers*, criar um app do tipo "Business".
+* [ ] **Configurar WhatsApp Product:** Adicionar o produto "WhatsApp" ao seu app.
+* [ ] **Obter Token Temporário:** Pegar o token de acesso temporário e o "Phone Number ID" para testes.
+* [ ] **Cadastrar Número de Teste:** Adicionar o seu próprio número de celular na lista de destinatários permitidos para teste.
+
+---
+
+### 3. Desenvolvimento do Backend (O "Bot")
+O WhatsApp não fala diretamente com o Supabase. Você precisa de um servidor (Node.js, Python ou Go) para receber a mensagem do WhatsApp e enviar para o Supabase.
+
+* [ ] **Inicializar Projeto:** Criar um servidor simples (recomendo **Node.js** com **Express** ou **Python** com **FastAPI**).
+* [ ] **Instalar Dependências:** Instalar SDK do Supabase e ferramentas para requisições web.
+* [ ] **Criar Rota de Verificação (Webhook GET):** O WhatsApp exige uma rota que retorne um `hub.challenge` para provar que o servidor é seu.
+* [ ] **Criar Rota de Recebimento (Webhook POST):**
+    * Receber o JSON do WhatsApp.
+    * Extrair a mensagem de texto e o número do remetente.
+    * *(Opcional)* Adicionar lógica de comando (ex: só criar tarefa se a mensagem começar com "Tarefa:").
+* [ ] **Integrar com Supabase:** Dentro da rota POST, usar o cliente do Supabase para fazer um `insert` na tabela `tasks` com o texto recebido.
+
+---
+
+### 4. Conexão e Deploy (Ligar tudo)
+Para o WhatsApp enviar dados para o seu código, seu código precisa estar na internet (HTTPS), não apenas no seu computador (localhost).
+
+* [ ] **Expor Localhost (Dev):** Usar o **Ngrok** para criar um túnel HTTPS para sua máquina local (útil para desenvolver).
+* [ ] **Configurar Webhook na Meta:** Colocar a URL do Ngrok (ou do seu servidor de produção) no painel da Meta Developers.
+* [ ] **Testar o fluxo:** Enviar "Comprar leite" no WhatsApp -> Backend recebe -> Backend salva no Supabase.
+* [ ] **Deploy Final:** Subir seu código para um serviço de hospedagem (Vercel, Railway, Render ou Heroku) para que o bot funcione 24/7 sem seu PC estar ligado.
+
+---
+
+### Resumo da Arquitetura
+
+> **Usuário** (WhatsApp) ➡️ **Meta Cloud API** (Webhook) ➡️ **Seu Código** (Node/Python) ➡️ **Supabase** (Database)
+
+**Gostaria que eu gerasse o código inicial do servidor em Node.js para você?**
+```
+- Colocar todas as tarefas, de tudo, aqui.
+
 
 ## **FASE 1
 
