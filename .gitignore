@@ -101,3 +101,5 @@ ios/Pods/
 # Temporary files
 *.cache
 *.tmp
+
+.vercel

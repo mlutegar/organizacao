@@ -31,6 +31,10 @@
     "scheme": "organizacao",
     "plugins": [
       "expo-router"
-    ]
+    ],
+    "extra": {
+      "supabaseUrl": "https://bdgohkqlysrysrftmuya.supabase.co",
+      "supabaseAnonKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkZ29oa3FseXNyeXNyZnRtdXlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMxMjQ2ODcsImV4cCI6MjA3ODcwMDY4N30.qu34J54mBBEXPOgMUWXrCrTRJoMfIPFekPQFUIVkLiY"
+    }
   }
 }

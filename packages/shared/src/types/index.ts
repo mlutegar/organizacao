@@ -18,3 +18,6 @@ export interface Task {
 }
 
 export type TaskStatus = 'pending' | 'in_progress' | 'completed';
+
+// Tipos do Supabase Database
+export * from './database';

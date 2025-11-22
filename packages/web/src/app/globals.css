@@ -68,3 +68,75 @@ p {
   font-size: 1rem;
   margin-bottom: 0;
 }
+
+.demo-section {
+  width: 100%;
+  margin-top: 4rem;
+  text-align: center;
+}
+
+.demo-section h2 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.demo-section > p {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.demo-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.demo-link {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 2rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-decoration: none;
+  transition: all 0.3s;
+  border: 2px solid transparent;
+}
+
+.demo-link:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.2);
+  border-color: #667eea;
+}
+
+.demo-icon {
+  font-size: 3rem;
+  filter: grayscale(0.3);
+}
+
+.demo-link:hover .demo-icon {
+  filter: grayscale(0);
+  transform: scale(1.1);
+  transition: all 0.3s;
+}
+
+.demo-link div {
+  text-align: left;
+  flex: 1;
+}
+
+.demo-link h3 {
+  font-size: 1.25rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.demo-link p {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 0;
+}
