@@ -25,6 +25,12 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
+.headerActions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
 .title {
   margin: 0;
   font-size: 32px;
@@ -40,6 +46,23 @@
 
 .subtitle strong {
   color: #667eea;
+}
+
+.menuButton {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.menuButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
 .signOutButton {
@@ -166,29 +189,86 @@
 .content {
   max-width: 1200px;
   margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 30px;
 }
 
-@media (min-width: 768px) {
-  .content {
-    grid-template-columns: 400px 1fr;
-  }
+.sidebarContent {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-.createCard {
+.menuActions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.menuActionButton {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
   background: white;
-  padding: 30px;
+  border: 2px solid #e0e0e0;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  height: fit-content;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
 }
 
-.createCard h2 {
-  margin: 0 0 20px 0;
+.menuActionButton:hover {
+  border-color: #667eea;
+  background: #f8f9ff;
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.menuActionIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 8px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.formHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.formHeader h2 {
+  margin: 0;
   font-size: 20px;
   font-weight: 700;
+  color: #333;
+}
+
+.backButton {
+  padding: 8px 16px;
+  background: #f5f5f5;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.backButton:hover {
+  background: #e0e0e0;
   color: #333;
 }
 

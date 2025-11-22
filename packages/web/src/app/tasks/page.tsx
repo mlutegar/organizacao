@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import type { Database } from '@organizacao/shared'
 import styles from './tasks.module.css'
+import Sidebar from '@/components/Sidebar'
 
 type Task = Database['public']['Tables']['tasks']['Row']
 
@@ -21,6 +22,8 @@ export default function TasksPage() {
   const [editDescription, setEditDescription] = useState('')
   const [editDueDate, setEditDueDate] = useState('')
   const [updating, setUpdating] = useState(false)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [showCreateForm, setShowCreateForm] = useState(false)
   const router = useRouter()
   const supabase = createClient()
 
@@ -97,6 +100,7 @@ export default function TasksPage() {
       setNewTaskTitle('')
       setNewTaskDescription('')
       setNewTaskDueDate('')
+      setShowCreateForm(false)
       loadTasks()
     }
 
@@ -245,9 +249,14 @@ export default function TasksPage() {
             Logado como: <strong>{user?.email}</strong>
           </p>
         </div>
-        <button onClick={handleSignOut} className={styles.signOutButton}>
-          Sair
-        </button>
+        <div className={styles.headerActions}>
+          <button onClick={() => setIsSidebarOpen(true)} className={styles.menuButton}>
+            ☰ Menu
+          </button>
+          <button onClick={handleSignOut} className={styles.signOutButton}>
+            Sair
+          </button>
+        </div>
       </div>
 
       {focusTasks.length > 0 && (
@@ -280,55 +289,6 @@ export default function TasksPage() {
       )}
 
       <div className={styles.content}>
-        <div className={styles.createCard}>
-          <h2>Criar Nova Tarefa</h2>
-          <form onSubmit={createTask} className={styles.form}>
-            <div className={styles.inputGroup}>
-              <label htmlFor="title">Título*</label>
-              <input
-                id="title"
-                type="text"
-                value={newTaskTitle}
-                onChange={(e) => setNewTaskTitle(e.target.value)}
-                placeholder="Ex: Estudar React"
-                required
-                disabled={creating}
-              />
-            </div>
-
-            <div className={styles.inputGroup}>
-              <label htmlFor="description">Descrição (opcional)</label>
-              <textarea
-                id="description"
-                value={newTaskDescription}
-                onChange={(e) => setNewTaskDescription(e.target.value)}
-                placeholder="Detalhes sobre a tarefa..."
-                rows={3}
-                disabled={creating}
-              />
-            </div>
-
-            <div className={styles.inputGroup}>
-              <label htmlFor="dueDate">Data de Vencimento (opcional)</label>
-              <input
-                id="dueDate"
-                type="date"
-                value={newTaskDueDate}
-                onChange={(e) => setNewTaskDueDate(e.target.value)}
-                disabled={creating}
-              />
-            </div>
-
-            <button
-              type="submit"
-              className={styles.createButton}
-              disabled={creating || !newTaskTitle.trim()}
-            >
-              {creating ? 'Criando...' : 'Criar Tarefa'}
-            </button>
-          </form>
-        </div>
-
         <div className={styles.tasksSection}>
           <h2>Lista de Tarefas ({tasks.length})</h2>
 
@@ -478,6 +438,79 @@ export default function TasksPage() {
           </div>
         </div>
       )}
+
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)}>
+        <div className={styles.sidebarContent}>
+          {!showCreateForm ? (
+            <div className={styles.menuActions}>
+              <button
+                onClick={() => setShowCreateForm(true)}
+                className={styles.menuActionButton}
+              >
+                <span className={styles.menuActionIcon}>+</span>
+                <span>Adicionar Tarefa</span>
+              </button>
+            </div>
+          ) : (
+            <div>
+              <div className={styles.formHeader}>
+                <h2>Criar Nova Tarefa</h2>
+                <button
+                  onClick={() => setShowCreateForm(false)}
+                  className={styles.backButton}
+                >
+                  ← Voltar
+                </button>
+              </div>
+              <form onSubmit={createTask} className={styles.form}>
+                <div className={styles.inputGroup}>
+                  <label htmlFor="title">Título*</label>
+                  <input
+                    id="title"
+                    type="text"
+                    value={newTaskTitle}
+                    onChange={(e) => setNewTaskTitle(e.target.value)}
+                    placeholder="Ex: Estudar React"
+                    required
+                    disabled={creating}
+                  />
+                </div>
+
+                <div className={styles.inputGroup}>
+                  <label htmlFor="description">Descrição (opcional)</label>
+                  <textarea
+                    id="description"
+                    value={newTaskDescription}
+                    onChange={(e) => setNewTaskDescription(e.target.value)}
+                    placeholder="Detalhes sobre a tarefa..."
+                    rows={3}
+                    disabled={creating}
+                  />
+                </div>
+
+                <div className={styles.inputGroup}>
+                  <label htmlFor="dueDate">Data de Vencimento (opcional)</label>
+                  <input
+                    id="dueDate"
+                    type="date"
+                    value={newTaskDueDate}
+                    onChange={(e) => setNewTaskDueDate(e.target.value)}
+                    disabled={creating}
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className={styles.createButton}
+                  disabled={creating || !newTaskTitle.trim()}
+                >
+                  {creating ? 'Criando...' : 'Criar Tarefa'}
+                </button>
+              </form>
+            </div>
+          )}
+        </div>
+      </Sidebar>
     </div>
   )
 }
