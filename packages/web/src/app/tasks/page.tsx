@@ -14,10 +14,12 @@ export default function TasksPage() {
   const [user, setUser] = useState<any>(null)
   const [newTaskTitle, setNewTaskTitle] = useState('')
   const [newTaskDescription, setNewTaskDescription] = useState('')
+  const [newTaskDueDate, setNewTaskDueDate] = useState('')
   const [creating, setCreating] = useState(false)
   const [editingTask, setEditingTask] = useState<Task | null>(null)
   const [editTitle, setEditTitle] = useState('')
   const [editDescription, setEditDescription] = useState('')
+  const [editDueDate, setEditDueDate] = useState('')
   const [updating, setUpdating] = useState(false)
   const router = useRouter()
   const supabase = createClient()
@@ -85,6 +87,7 @@ export default function TasksPage() {
       .insert({
         title: newTaskTitle,
         description: newTaskDescription || null,
+        due_date: newTaskDueDate || null,
         user_id: user.id,
       })
 
@@ -93,6 +96,7 @@ export default function TasksPage() {
     } else {
       setNewTaskTitle('')
       setNewTaskDescription('')
+      setNewTaskDueDate('')
       loadTasks()
     }
 
@@ -131,12 +135,14 @@ export default function TasksPage() {
     setEditingTask(task)
     setEditTitle(task.title)
     setEditDescription(task.description || '')
+    setEditDueDate(task.due_date || '')
   }
 
   function closeEditModal() {
     setEditingTask(null)
     setEditTitle('')
     setEditDescription('')
+    setEditDueDate('')
   }
 
   async function updateTask(e: React.FormEvent) {
@@ -151,6 +157,7 @@ export default function TasksPage() {
       .update({
         title: editTitle,
         description: editDescription || null,
+        due_date: editDueDate || null,
       })
       .eq('id', editingTask.id)
 
@@ -220,6 +227,17 @@ export default function TasksPage() {
               />
             </div>
 
+            <div className={styles.inputGroup}>
+              <label htmlFor="dueDate">Data de Vencimento (opcional)</label>
+              <input
+                id="dueDate"
+                type="date"
+                value={newTaskDueDate}
+                onChange={(e) => setNewTaskDueDate(e.target.value)}
+                disabled={creating}
+              />
+            </div>
+
             <button
               type="submit"
               className={styles.createButton}
@@ -263,6 +281,15 @@ export default function TasksPage() {
                       <small>
                         Criada em: {new Date(task.created_at).toLocaleDateString('pt-BR')}
                       </small>
+                      {task.due_date && (
+                        <small className={
+                          new Date(task.due_date) < new Date() && !task.completed
+                            ? styles.overdue
+                            : styles.dueDate
+                        }>
+                          Vence em: {new Date(task.due_date).toLocaleDateString('pt-BR')}
+                        </small>
+                      )}
                     </div>
                   </div>
                   <div className={styles.taskActions}>
@@ -324,6 +351,17 @@ export default function TasksPage() {
                   onChange={(e) => setEditDescription(e.target.value)}
                   placeholder="Detalhes sobre a tarefa..."
                   rows={3}
+                  disabled={updating}
+                />
+              </div>
+
+              <div className={styles.inputGroup}>
+                <label htmlFor="edit-dueDate">Data de Vencimento (opcional)</label>
+                <input
+                  id="edit-dueDate"
+                  type="date"
+                  value={editDueDate}
+                  onChange={(e) => setEditDueDate(e.target.value)}
                   disabled={updating}
                 />
               </div>
