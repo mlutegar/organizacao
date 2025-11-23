@@ -735,6 +735,12 @@ export default function TasksPage() {
                   📥 Inbox ({tasks.filter(t => !t.project_id && !t.completed).length})
                 </button>
                 <button
+                  className={styles.sidebarNavItem}
+                  onClick={() => router.push('/today')}
+                >
+                  ⭐ Tarefas do Dia ({focusTasks.length})
+                </button>
+                <button
                   className={`${styles.sidebarNavItem} ${viewMode === 'all' ? styles.sidebarNavItemActive : ''}`}
                   onClick={() => setViewMode('all')}
                 >

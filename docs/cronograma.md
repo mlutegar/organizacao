@@ -10,13 +10,53 @@
 ```
 Etapas:
 
-### 2. Configuração do WhatsApp (Meta Developers)
-Você usará a API oficial da Meta (antigo Facebook), que é gratuita para baixos volumes.
+### 2. Configuração do WhatsApp Business API (Meta for Developers): https://developers.facebook.com/apps/996324246048889/use_cases/customize/?use_case_enum=WHATSAPP_BUSINESS_MESSAGING&selected_tab=wa-dev-quickstart&product_route=whatsapp-business&business_id=560518244609342
 
-* [ ] **Criar App na Meta:** Acessar o *Meta for Developers*, criar um app do tipo "Business".
-* [ ] **Configurar WhatsApp Product:** Adicionar o produto "WhatsApp" ao seu app.
-* [ ] **Obter Token Temporário:** Pegar o token de acesso temporário e o "Phone Number ID" para testes.
-* [ ] **Cadastrar Número de Teste:** Adicionar o seu próprio número de celular na lista de destinatários permitidos para teste.
+#### Passo a Passo Detalhado:
+
+* [ ] **Adicionar o Produto WhatsApp**
+  - No painel do app, procure "WhatsApp" na lista de produtos
+  - Clique em "Configurar" ou "Adicionar ao App"
+  - Selecione ou crie uma **Business Account do WhatsApp**
+
+* [ ] **Configurar Número de Telefone**
+  - A Meta fornece um **número de teste temporário** automaticamente
+  - Anote o **Phone Number ID** (necessário para enviar mensagens)
+  - **Limitação importante:** O número de teste só funciona por 90 dias
+
+* [ ] **Obter Credenciais de API**
+  - Na seção "API Setup", copie:
+    - **Token de Acesso Temporário** (válido por 24-72h)
+    - **Phone Number ID**
+    - **WhatsApp Business Account ID**
+  - Para produção, você precisará gerar um **Token Permanente** depois
+
+* [ ] **Adicionar Números de Teste (Muito Importante!)**
+  - Vá em "API Setup" → "Para" (ou "To")
+  - Clique em "Adicionar número de telefone"
+  - Digite seu número com código do país (ex: +5521999999999)
+  - Você receberá um código via WhatsApp para verificar
+  - **Sem isso, não conseguirá receber mensagens de teste!**
+
+* [ ] **Testar Envio de Mensagem (Opcional)**
+  - Use a ferramenta "Send and receive messages" no painel
+  - Envie uma mensagem teste para seu número cadastrado
+  - Confirme que recebeu no WhatsApp
+
+#### Correções e Observações Importantes:
+
+1. **Tipo de App:** Pode ser "Outro" ou "Business", mas não precisa ser necessariamente "Business"
+2. **Token Temporário:** Expira em 24-72 horas, não é permanente
+3. **Número de Teste:** Funciona apenas por 90 dias e só com números cadastrados
+4. **Webhooks:** Você precisará configurar webhooks para receber mensagens (próximo passo)
+5. **Verificação de Negócio:** Para produção com número próprio, precisará de verificação Meta Business
+
+#### Próximos Passos Necessários:
+
+* [ ] Configurar Webhook para receber mensagens
+* [ ] Obter Token de Acesso Permanente (para produção)
+* [ ] Registrar número próprio (quando sair de teste)
+* [ ] Passar por Business Verification (para produção)
 
 ---
 
