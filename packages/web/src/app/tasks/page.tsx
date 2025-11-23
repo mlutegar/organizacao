@@ -9,7 +9,7 @@ import Sidebar from '@/components/Sidebar'
 
 type Task = Database['public']['Tables']['tasks']['Row']
 type Project = Database['public']['Tables']['projects']['Row']
-type ViewMode = 'all' | 'today' | 'by-project' | 'inbox'
+type ViewMode = 'all' | 'today' | 'by-project' | 'inbox' | 'completed'
 
 export default function TasksPage() {
   const [tasks, setTasks] = useState<Task[]>([])
@@ -315,15 +315,17 @@ export default function TasksPage() {
   function getFilteredTasks(): Task[] {
     switch (viewMode) {
       case 'all':
-        return tasks
+        return tasks.filter(task => !task.completed)
       case 'today':
-        return tasks.filter(task => task.due_date === today)
+        return tasks.filter(task => task.due_date === today && !task.completed)
       case 'inbox':
-        return tasks.filter(task => !task.project_id)
+        return tasks.filter(task => !task.project_id && !task.completed)
       case 'by-project':
-        return tasks
+        return tasks.filter(task => !task.completed)
+      case 'completed':
+        return tasks.filter(task => task.completed)
       default:
-        return tasks
+        return tasks.filter(task => !task.completed)
     }
   }
 
@@ -413,6 +415,7 @@ export default function TasksPage() {
             {viewMode === 'today' && `Tarefas que Finalizam Hoje (${filteredTasks.length})`}
             {viewMode === 'inbox' && `Inbox - Tarefas sem Projeto (${filteredTasks.length})`}
             {viewMode === 'by-project' && 'Tarefas por Projeto'}
+            {viewMode === 'completed' && `Tarefas Concluídas (${filteredTasks.length})`}
           </h2>
 
           {tasks.length === 0 ? (
@@ -722,7 +725,7 @@ export default function TasksPage() {
                     setIsSidebarOpen(false)
                   }}
                 >
-                  📥 Inbox ({tasks.filter(t => !t.project_id).length})
+                  📥 Inbox ({tasks.filter(t => !t.project_id && !t.completed).length})
                 </button>
                 <button
                   className={`${styles.sidebarNavItem} ${viewMode === 'all' ? styles.sidebarNavItemActive : ''}`}
@@ -731,7 +734,7 @@ export default function TasksPage() {
                     setIsSidebarOpen(false)
                   }}
                 >
-                  📋 Todas as Tarefas ({tasks.length})
+                  📋 Todas as Tarefas ({tasks.filter(t => !t.completed).length})
                 </button>
                 <button
                   className={`${styles.sidebarNavItem} ${viewMode === 'today' ? styles.sidebarNavItemActive : ''}`}
@@ -740,7 +743,16 @@ export default function TasksPage() {
                     setIsSidebarOpen(false)
                   }}
                 >
-                  📅 Finalizam Hoje ({tasks.filter(t => t.due_date === today).length})
+                  📅 Finalizam Hoje ({tasks.filter(t => t.due_date === today && !t.completed).length})
+                </button>
+                <button
+                  className={`${styles.sidebarNavItem} ${viewMode === 'completed' ? styles.sidebarNavItemActive : ''}`}
+                  onClick={() => {
+                    setViewMode('completed')
+                    setIsSidebarOpen(false)
+                  }}
+                >
+                  ✅ Concluídas ({tasks.filter(t => t.completed).length})
                 </button>
               </div>
 
