@@ -1,10 +1,6 @@
-# Inbox (0)
+# Sidebar (0)
 
-Quando eu entro na tela de tarefas, eu me deparo com a lista de tarefas. Eu quero começar a ter tipos de visualizações diferentes.
-As quais eu pensei por hora são: 
-    - Todas as tarefas (mesma coisa que agora), 
-    - Tarefas que o prazo finaliza hoje, 
-    - Tarefas por projeto, 
-    - Tarefas sem projeto (Inbox).
+Quero minha sidebar sempre fique ativo. E tire o escurecimento no fundo quando ela abre.
 
 @packages/web/src/app/tasks/page.tsx
+@packages/web/src/components/Sidebar.tsx
