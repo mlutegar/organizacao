@@ -8,20 +8,7 @@
   tirar um tempo dele para se organizar certinho.
 - Criar um bot no whatsapp que ao falar com ele, ele cria a tarefa no supabase.
 ```
-Essa é uma ótima ideia de projeto de automação. Para que isso funcione, você precisará de três pilares: o **Supabase** (banco de dados), a **WhatsApp Cloud API** (interface de mensagem) e um **Backend/Middleware** (seu código que liga os dois).
-
-Aqui estão as subtarefas divididas por etapas lógicas de desenvolvimento:
-
-### 1. Configuração do Banco de Dados (Supabase)
-Esta é a etapa mais fácil e deve ser feita primeiro para garantir que você tem onde salvar os dados.
-
-* [ ] **Criar Projeto:** Iniciar um novo projeto no painel do Supabase.
-* [ ] **Modelagem da Tabela:** Criar uma tabela chamada `tasks` (ou `tarefas`).
-    * Colunas sugeridas: `id` (int8/uuid), `content` (text), `status` (text/boolean), `phone_number` (text - para saber quem criou), `created_at` (timestamp).
-* [ ] **Segurança (RLS):** Configurar as Row Level Security policies (ou desativar temporariamente para testes, mas não recomendado para produção).
-* [ ] **Obter Credenciais:** Copiar a `Project URL` e a `anon public key` (ou `service_role` se for apenas backend) nas configurações de API.
-
----
+Etapas:
 
 ### 2. Configuração do WhatsApp (Meta Developers)
 Você usará a API oficial da Meta (antigo Facebook), que é gratuita para baixos volumes.

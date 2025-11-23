@@ -93,6 +93,82 @@
   border: 2px solid #fbbf24;
 }
 
+.viewTabs {
+  max-width: 1200px;
+  margin: 0 auto 20px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 0 20px;
+}
+
+.viewTab {
+  padding: 12px 20px;
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.viewTab:hover {
+  border-color: #667eea;
+  color: #667eea;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.viewTabActive {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-color: #667eea;
+  color: white;
+}
+
+.viewTabActive:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.projectGroups {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.projectGroup {
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 20px;
+  background: #fafafa;
+  transition: all 0.2s;
+}
+
+.projectGroup:hover {
+  border-color: #667eea;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.projectGroupTitle {
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.projectGroupCount {
+  color: #999;
+  font-size: 16px;
+  font-weight: 600;
+}
+
 .focusSectionTitle {
   margin: 0 0 20px 0;
   font-size: 24px;

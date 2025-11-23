@@ -9,6 +9,7 @@ import Sidebar from '@/components/Sidebar'
 
 type Task = Database['public']['Tables']['tasks']['Row']
 type Project = Database['public']['Tables']['projects']['Row']
+type ViewMode = 'all' | 'today' | 'by-project' | 'inbox'
 
 export default function TasksPage() {
   const [tasks, setTasks] = useState<Task[]>([])
@@ -33,6 +34,7 @@ export default function TasksPage() {
   const [newProjectDescription, setNewProjectDescription] = useState('')
   const [newProjectColor, setNewProjectColor] = useState('#6366f1')
   const [creatingProject, setCreatingProject] = useState(false)
+  const [viewMode, setViewMode] = useState<ViewMode>('all')
   const router = useRouter()
   const supabase = createClient()
 
@@ -309,6 +311,40 @@ export default function TasksPage() {
   const today = new Date().toISOString().split('T')[0]
   const focusTasks = tasks.filter(task => task.is_focus && task.focus_date === today)
 
+  // Função para filtrar tarefas baseado no modo de visualização
+  function getFilteredTasks(): Task[] {
+    switch (viewMode) {
+      case 'all':
+        return tasks
+      case 'today':
+        return tasks.filter(task => task.due_date === today)
+      case 'inbox':
+        return tasks.filter(task => !task.project_id)
+      case 'by-project':
+        return tasks
+      default:
+        return tasks
+    }
+  }
+
+  // Função para agrupar tarefas por projeto (quando viewMode === 'by-project')
+  function getTasksByProject(): { [key: string]: Task[] } {
+    const grouped: { [key: string]: Task[] } = {}
+
+    tasks.forEach(task => {
+      const projectId = task.project_id || 'no-project'
+      if (!grouped[projectId]) {
+        grouped[projectId] = []
+      }
+      grouped[projectId].push(task)
+    })
+
+    return grouped
+  }
+
+  const filteredTasks = getFilteredTasks()
+  const tasksByProject = viewMode === 'by-project' ? getTasksByProject() : {}
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -370,96 +406,234 @@ export default function TasksPage() {
         </div>
       )}
 
+      <div className={styles.viewTabs}>
+        <button
+          className={`${styles.viewTab} ${viewMode === 'all' ? styles.viewTabActive : ''}`}
+          onClick={() => setViewMode('all')}
+        >
+          Todas as Tarefas ({tasks.length})
+        </button>
+        <button
+          className={`${styles.viewTab} ${viewMode === 'today' ? styles.viewTabActive : ''}`}
+          onClick={() => setViewMode('today')}
+        >
+          Finalizam Hoje ({tasks.filter(t => t.due_date === today).length})
+        </button>
+        <button
+          className={`${styles.viewTab} ${viewMode === 'by-project' ? styles.viewTabActive : ''}`}
+          onClick={() => setViewMode('by-project')}
+        >
+          Por Projeto
+        </button>
+        <button
+          className={`${styles.viewTab} ${viewMode === 'inbox' ? styles.viewTabActive : ''}`}
+          onClick={() => setViewMode('inbox')}
+        >
+          Inbox ({tasks.filter(t => !t.project_id).length})
+        </button>
+      </div>
+
       <div className={styles.content}>
         <div className={styles.tasksSection}>
-          <h2>Lista de Tarefas ({tasks.length})</h2>
+          <h2>
+            {viewMode === 'all' && `Lista de Tarefas (${filteredTasks.length})`}
+            {viewMode === 'today' && `Tarefas que Finalizam Hoje (${filteredTasks.length})`}
+            {viewMode === 'inbox' && `Inbox - Tarefas sem Projeto (${filteredTasks.length})`}
+            {viewMode === 'by-project' && 'Tarefas por Projeto'}
+          </h2>
 
           {tasks.length === 0 ? (
             <div className={styles.emptyState}>
               <p>Nenhuma tarefa criada ainda.</p>
               <p>Crie sua primeira tarefa acima!</p>
             </div>
+          ) : viewMode === 'by-project' ? (
+            <div className={styles.projectGroups}>
+              {Object.keys(tasksByProject).map((projectId) => {
+                const projectTasks = tasksByProject[projectId]
+                const isInbox = projectId === 'no-project'
+                const project = projects.find(p => p.id === projectId)
+
+                return (
+                  <div key={projectId} className={styles.projectGroup}>
+                    <h3 className={styles.projectGroupTitle}>
+                      {isInbox ? (
+                        'Inbox - Sem Projeto'
+                      ) : (
+                        <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <span
+                            style={{
+                              width: '12px',
+                              height: '12px',
+                              borderRadius: '50%',
+                              backgroundColor: project?.color || '#6366f1',
+                              display: 'inline-block'
+                            }}
+                          />
+                          {project?.name || 'Projeto Desconhecido'}
+                        </span>
+                      )}
+                      <span className={styles.projectGroupCount}>({projectTasks.length})</span>
+                    </h3>
+                    <div className={styles.tasksList}>
+                      {projectTasks.map((task) => (
+                        <div
+                          key={task.id}
+                          className={`${styles.taskCard} ${task.completed ? styles.completed : ''}`}
+                        >
+                          <div
+                            className={styles.taskContent}
+                            onClick={() => openEditModal(task)}
+                            style={{ cursor: 'pointer' }}
+                          >
+                            <div className={styles.taskHeader}>
+                              <h3>{task.title}</h3>
+                              <span className={styles.taskStatus}>
+                                {task.completed ? '✓ Concluída' : '○ Pendente'}
+                              </span>
+                            </div>
+                            {task.description && (
+                              <p className={styles.taskDescription}>{task.description}</p>
+                            )}
+                            <div className={styles.taskMeta}>
+                              <small>
+                                Criada em: {new Date(task.created_at).toLocaleDateString('pt-BR')}
+                              </small>
+                              {task.due_date && (
+                                <small className={
+                                  new Date(task.due_date) < new Date() && !task.completed
+                                    ? styles.overdue
+                                    : styles.dueDate
+                                }>
+                                  Vence em: {new Date(task.due_date).toLocaleDateString('pt-BR')}
+                                </small>
+                              )}
+                            </div>
+                          </div>
+                          <div className={styles.taskActions}>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                toggleFocus(task.id, task.is_focus)
+                              }}
+                              className={task.is_focus ? styles.focusButtonActive : styles.focusButton}
+                              title={task.is_focus ? 'Remover do foco' : 'Marcar como foco do dia'}
+                            >
+                              {task.is_focus ? '⭐ Foco' : '☆ Foco'}
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                toggleTask(task.id, task.completed)
+                              }}
+                              className={styles.toggleButton}
+                            >
+                              {task.completed ? 'Reabrir' : 'Concluir'}
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                deleteTask(task.id)
+                              }}
+                              className={styles.deleteButton}
+                            >
+                              Excluir
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
           ) : (
             <div className={styles.tasksList}>
-              {tasks.map((task) => (
-                <div
-                  key={task.id}
-                  className={`${styles.taskCard} ${task.completed ? styles.completed : ''}`}
-                >
+              {filteredTasks.length === 0 ? (
+                <div className={styles.emptyState}>
+                  <p>Nenhuma tarefa encontrada para este filtro.</p>
+                </div>
+              ) : (
+                filteredTasks.map((task) => (
                   <div
-                    className={styles.taskContent}
-                    onClick={() => openEditModal(task)}
-                    style={{ cursor: 'pointer' }}
+                    key={task.id}
+                    className={`${styles.taskCard} ${task.completed ? styles.completed : ''}`}
                   >
-                    <div className={styles.taskHeader}>
-                      <h3>{task.title}</h3>
-                      <span className={styles.taskStatus}>
-                        {task.completed ? '✓ Concluída' : '○ Pendente'}
-                      </span>
-                    </div>
-                    {task.description && (
-                      <p className={styles.taskDescription}>{task.description}</p>
-                    )}
-                    {task.project_id && getProjectName(task.project_id) && (
-                      <div className={styles.taskProject}>
-                        <span
-                          className={styles.projectBadge}
-                          style={{
-                            backgroundColor: getProjectColor(task.project_id) || '#6366f1',
-                            color: '#fff'
-                          }}
-                        >
-                          {getProjectName(task.project_id)}
+                    <div
+                      className={styles.taskContent}
+                      onClick={() => openEditModal(task)}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      <div className={styles.taskHeader}>
+                        <h3>{task.title}</h3>
+                        <span className={styles.taskStatus}>
+                          {task.completed ? '✓ Concluída' : '○ Pendente'}
                         </span>
                       </div>
-                    )}
-                    <div className={styles.taskMeta}>
-                      <small>
-                        Criada em: {new Date(task.created_at).toLocaleDateString('pt-BR')}
-                      </small>
-                      {task.due_date && (
-                        <small className={
-                          new Date(task.due_date) < new Date() && !task.completed
-                            ? styles.overdue
-                            : styles.dueDate
-                        }>
-                          Vence em: {new Date(task.due_date).toLocaleDateString('pt-BR')}
-                        </small>
+                      {task.description && (
+                        <p className={styles.taskDescription}>{task.description}</p>
                       )}
+                      {task.project_id && getProjectName(task.project_id) && (
+                        <div className={styles.taskProject}>
+                          <span
+                            className={styles.projectBadge}
+                            style={{
+                              backgroundColor: getProjectColor(task.project_id) || '#6366f1',
+                              color: '#fff'
+                            }}
+                          >
+                            {getProjectName(task.project_id)}
+                          </span>
+                        </div>
+                      )}
+                      <div className={styles.taskMeta}>
+                        <small>
+                          Criada em: {new Date(task.created_at).toLocaleDateString('pt-BR')}
+                        </small>
+                        {task.due_date && (
+                          <small className={
+                            new Date(task.due_date) < new Date() && !task.completed
+                              ? styles.overdue
+                              : styles.dueDate
+                          }>
+                            Vence em: {new Date(task.due_date).toLocaleDateString('pt-BR')}
+                          </small>
+                        )}
+                      </div>
+                    </div>
+                    <div className={styles.taskActions}>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          toggleFocus(task.id, task.is_focus)
+                        }}
+                        className={task.is_focus ? styles.focusButtonActive : styles.focusButton}
+                        title={task.is_focus ? 'Remover do foco' : 'Marcar como foco do dia'}
+                      >
+                        {task.is_focus ? '⭐ Foco' : '☆ Foco'}
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          toggleTask(task.id, task.completed)
+                        }}
+                        className={styles.toggleButton}
+                      >
+                        {task.completed ? 'Reabrir' : 'Concluir'}
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          deleteTask(task.id)
+                        }}
+                        className={styles.deleteButton}
+                      >
+                        Excluir
+                      </button>
                     </div>
                   </div>
-                  <div className={styles.taskActions}>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        toggleFocus(task.id, task.is_focus)
-                      }}
-                      className={task.is_focus ? styles.focusButtonActive : styles.focusButton}
-                      title={task.is_focus ? 'Remover do foco' : 'Marcar como foco do dia'}
-                    >
-                      {task.is_focus ? '⭐ Foco' : '☆ Foco'}
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        toggleTask(task.id, task.completed)
-                      }}
-                      className={styles.toggleButton}
-                    >
-                      {task.completed ? 'Reabrir' : 'Concluir'}
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        deleteTask(task.id)
-                      }}
-                      className={styles.deleteButton}
-                    >
-                      Excluir
-                    </button>
-                  </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           )}
         </div>
