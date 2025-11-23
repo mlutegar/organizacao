@@ -720,37 +720,25 @@ export default function TasksPage() {
               <div className={styles.sidebarNavigation}>
                 <button
                   className={`${styles.sidebarNavItem} ${viewMode === 'inbox' ? styles.sidebarNavItemActive : ''}`}
-                  onClick={() => {
-                    setViewMode('inbox')
-                    setIsSidebarOpen(false)
-                  }}
+                  onClick={() => setViewMode('inbox')}
                 >
                   📥 Inbox ({tasks.filter(t => !t.project_id && !t.completed).length})
                 </button>
                 <button
                   className={`${styles.sidebarNavItem} ${viewMode === 'all' ? styles.sidebarNavItemActive : ''}`}
-                  onClick={() => {
-                    setViewMode('all')
-                    setIsSidebarOpen(false)
-                  }}
+                  onClick={() => setViewMode('all')}
                 >
                   📋 Todas as Tarefas ({tasks.filter(t => !t.completed).length})
                 </button>
                 <button
                   className={`${styles.sidebarNavItem} ${viewMode === 'today' ? styles.sidebarNavItemActive : ''}`}
-                  onClick={() => {
-                    setViewMode('today')
-                    setIsSidebarOpen(false)
-                  }}
+                  onClick={() => setViewMode('today')}
                 >
                   📅 Finalizam Hoje ({tasks.filter(t => t.due_date === today && !t.completed).length})
                 </button>
                 <button
                   className={`${styles.sidebarNavItem} ${viewMode === 'completed' ? styles.sidebarNavItemActive : ''}`}
-                  onClick={() => {
-                    setViewMode('completed')
-                    setIsSidebarOpen(false)
-                  }}
+                  onClick={() => setViewMode('completed')}
                 >
                   ✅ Concluídas ({tasks.filter(t => t.completed).length})
                 </button>
@@ -774,10 +762,7 @@ export default function TasksPage() {
                     <button
                       key={project.id}
                       className={styles.projectItem}
-                      onClick={() => {
-                        setViewMode('by-project')
-                        setIsSidebarOpen(false)
-                      }}
+                      onClick={() => setViewMode('by-project')}
                     >
                       <span
                         className={styles.projectDot}
