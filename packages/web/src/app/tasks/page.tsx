@@ -406,33 +406,6 @@ export default function TasksPage() {
         </div>
       )}
 
-      <div className={styles.viewTabs}>
-        <button
-          className={`${styles.viewTab} ${viewMode === 'all' ? styles.viewTabActive : ''}`}
-          onClick={() => setViewMode('all')}
-        >
-          Todas as Tarefas ({tasks.length})
-        </button>
-        <button
-          className={`${styles.viewTab} ${viewMode === 'today' ? styles.viewTabActive : ''}`}
-          onClick={() => setViewMode('today')}
-        >
-          Finalizam Hoje ({tasks.filter(t => t.due_date === today).length})
-        </button>
-        <button
-          className={`${styles.viewTab} ${viewMode === 'by-project' ? styles.viewTabActive : ''}`}
-          onClick={() => setViewMode('by-project')}
-        >
-          Por Projeto
-        </button>
-        <button
-          className={`${styles.viewTab} ${viewMode === 'inbox' ? styles.viewTabActive : ''}`}
-          onClick={() => setViewMode('inbox')}
-        >
-          Inbox ({tasks.filter(t => !t.project_id).length})
-        </button>
-      </div>
-
       <div className={styles.content}>
         <div className={styles.tasksSection}>
           <h2>
@@ -728,22 +701,87 @@ export default function TasksPage() {
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)}>
         <div className={styles.sidebarContent}>
           {!showCreateForm && !showCreateProjectForm ? (
-            <div className={styles.menuActions}>
-              <button
-                onClick={() => setShowCreateForm(true)}
-                className={styles.menuActionButton}
-              >
-                <span className={styles.menuActionIcon}>+</span>
-                <span>Adicionar Tarefa</span>
-              </button>
-              <button
-                onClick={() => setShowCreateProjectForm(true)}
-                className={styles.menuActionButton}
-              >
-                <span className={styles.menuActionIcon}>📁</span>
-                <span>Criar Projeto</span>
-              </button>
-            </div>
+            <>
+              <div className={styles.menuActions}>
+                <button
+                  onClick={() => {
+                    setShowCreateForm(true)
+                  }}
+                  className={styles.menuActionButton}
+                >
+                  <span className={styles.menuActionIcon}>+</span>
+                  <span>Adicionar Tarefa</span>
+                </button>
+              </div>
+
+              <div className={styles.sidebarNavigation}>
+                <button
+                  className={`${styles.sidebarNavItem} ${viewMode === 'inbox' ? styles.sidebarNavItemActive : ''}`}
+                  onClick={() => {
+                    setViewMode('inbox')
+                    setIsSidebarOpen(false)
+                  }}
+                >
+                  📥 Inbox ({tasks.filter(t => !t.project_id).length})
+                </button>
+                <button
+                  className={`${styles.sidebarNavItem} ${viewMode === 'all' ? styles.sidebarNavItemActive : ''}`}
+                  onClick={() => {
+                    setViewMode('all')
+                    setIsSidebarOpen(false)
+                  }}
+                >
+                  📋 Todas as Tarefas ({tasks.length})
+                </button>
+                <button
+                  className={`${styles.sidebarNavItem} ${viewMode === 'today' ? styles.sidebarNavItemActive : ''}`}
+                  onClick={() => {
+                    setViewMode('today')
+                    setIsSidebarOpen(false)
+                  }}
+                >
+                  📅 Finalizam Hoje ({tasks.filter(t => t.due_date === today).length})
+                </button>
+              </div>
+
+              <div className={styles.sidebarDivider} />
+
+              <div className={styles.projectsSection}>
+                <div className={styles.projectsHeader}>
+                  <span>Projetos</span>
+                  <button
+                    onClick={() => setShowCreateProjectForm(true)}
+                    className={styles.addProjectButton}
+                    title="Adicionar projeto"
+                  >
+                    +
+                  </button>
+                </div>
+                <div className={styles.projectsList}>
+                  {projects.map((project) => (
+                    <button
+                      key={project.id}
+                      className={styles.projectItem}
+                      onClick={() => {
+                        setViewMode('by-project')
+                        setIsSidebarOpen(false)
+                      }}
+                    >
+                      <span
+                        className={styles.projectDot}
+                        style={{ backgroundColor: project.color }}
+                      />
+                      <span>{project.name}</span>
+                    </button>
+                  ))}
+                  {projects.length === 0 && (
+                    <div className={styles.emptyProjects}>
+                      Nenhum projeto criado
+                    </div>
+                  )}
+                </div>
+              </div>
+            </>
           ) : showCreateForm ? (
             <div>
               <div className={styles.formHeader}>
