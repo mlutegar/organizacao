@@ -12,11 +12,6 @@ interface SidebarProps {
 export default function Sidebar({ isOpen, onClose, children }: SidebarProps) {
   return (
     <>
-      {/* Overlay */}
-      {isOpen && (
-        <div className={styles.overlay} onClick={onClose} />
-      )}
-
       {/* Sidebar */}
       <div className={`${styles.sidebar} ${isOpen ? styles.open : ''}`}>
         <div className={styles.header}>

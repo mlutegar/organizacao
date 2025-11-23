@@ -27,7 +27,7 @@ export default function TasksPage() {
   const [editDueDate, setEditDueDate] = useState('')
   const [editProjectId, setEditProjectId] = useState('')
   const [updating, setUpdating] = useState(false)
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [showCreateProjectForm, setShowCreateProjectForm] = useState(false)
   const [newProjectName, setNewProjectName] = useState('')
