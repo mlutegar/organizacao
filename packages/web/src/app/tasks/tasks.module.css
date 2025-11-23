@@ -844,6 +844,20 @@
   transform: translateX(4px);
 }
 
+.projectItemActive {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-color: #667eea;
+  color: white;
+}
+
+.projectItemActive:hover {
+  transform: translateX(4px);
+}
+
+.projectItemActive .projectDot {
+  background-color: white !important;
+}
+
 .projectDot {
   width: 8px;
   height: 8px;

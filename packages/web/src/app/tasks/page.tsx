@@ -35,6 +35,7 @@ export default function TasksPage() {
   const [newProjectColor, setNewProjectColor] = useState('#6366f1')
   const [creatingProject, setCreatingProject] = useState(false)
   const [viewMode, setViewMode] = useState<ViewMode>('all')
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null)
   const router = useRouter()
   const supabase = createClient()
 
@@ -321,6 +322,11 @@ export default function TasksPage() {
       case 'inbox':
         return tasks.filter(task => !task.project_id && !task.completed)
       case 'by-project':
+        // Se um projeto específico foi selecionado, mostrar apenas as tarefas dele
+        if (selectedProjectId) {
+          return tasks.filter(task => task.project_id === selectedProjectId && !task.completed)
+        }
+        // Caso contrário, mostrar todas as tarefas não concluídas
         return tasks.filter(task => !task.completed)
       case 'completed':
         return tasks.filter(task => task.completed)
@@ -414,7 +420,11 @@ export default function TasksPage() {
             {viewMode === 'all' && `Lista de Tarefas (${filteredTasks.length})`}
             {viewMode === 'today' && `Tarefas que Finalizam Hoje (${filteredTasks.length})`}
             {viewMode === 'inbox' && `Inbox - Tarefas sem Projeto (${filteredTasks.length})`}
-            {viewMode === 'by-project' && 'Tarefas por Projeto'}
+            {viewMode === 'by-project' && selectedProjectId && (() => {
+              const project = projects.find(p => p.id === selectedProjectId)
+              return project ? `${project.name} (${filteredTasks.length})` : 'Projeto'
+            })()}
+            {viewMode === 'by-project' && !selectedProjectId && 'Tarefas por Projeto'}
             {viewMode === 'completed' && `Tarefas Concluídas (${filteredTasks.length})`}
           </h2>
 
@@ -423,7 +433,7 @@ export default function TasksPage() {
               <p>Nenhuma tarefa criada ainda.</p>
               <p>Crie sua primeira tarefa acima!</p>
             </div>
-          ) : viewMode === 'by-project' ? (
+          ) : viewMode === 'by-project' && !selectedProjectId ? (
             <div className={styles.projectGroups}>
               {Object.keys(tasksByProject).map((projectId) => {
                 const projectTasks = tasksByProject[projectId]
@@ -761,8 +771,11 @@ export default function TasksPage() {
                   {projects.map((project) => (
                     <button
                       key={project.id}
-                      className={styles.projectItem}
-                      onClick={() => setViewMode('by-project')}
+                      className={`${styles.projectItem} ${viewMode === 'by-project' && selectedProjectId === project.id ? styles.projectItemActive : ''}`}
+                      onClick={() => {
+                        setViewMode('by-project')
+                        setSelectedProjectId(project.id)
+                      }}
                     >
                       <span
                         className={styles.projectDot}
