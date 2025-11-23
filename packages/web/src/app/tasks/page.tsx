@@ -785,7 +785,7 @@ export default function TasksPage() {
                     >
                       <span
                         className={styles.projectDot}
-                        style={{ backgroundColor: project.color }}
+                        style={{ backgroundColor: project.color || undefined }}
                       />
                       <span>{project.name}</span>
                     </button>
