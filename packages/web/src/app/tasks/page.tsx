@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import type { Database } from '@organizacao/shared'
 import styles from './tasks.module.css'
 import Sidebar from '@/components/Sidebar'
+import Timer from '@/components/Timer'
 
 type Task = Database['public']['Tables']['tasks']['Row']
 type Project = Database['public']['Tables']['projects']['Row']
@@ -713,6 +714,8 @@ export default function TasksPage() {
 
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)}>
         <div className={styles.sidebarContent}>
+          <Timer />
+
           {!showCreateForm && !showCreateProjectForm ? (
             <>
               <div className={styles.menuActions}>
