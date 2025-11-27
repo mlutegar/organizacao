@@ -1,10 +1,9 @@
-# Tarefas do dia (0)
+# Versao celular
 
-No meu sistema tem uma seção chamada "Tarefas do dia" que exibe as tarefas atribuídas ao usuário para o dia atual. Que
-eu posso selecionar até 5 tarefas para focar durante o dia. Essas tarefas ficam marcadas com uma estrela ⭐️ Foco para
-indicar que são as tarefas prioritárias do dia.
+Atualmente a versao web tem o sidebar ativo nativamente. QUero que quando acessado em ua tela menor (celular) o sidebar
+fique oculto e possa ser aberto por um botao de menu (hamburguer) no canto superior esquerdo.
 
-Eu quero adicionar uma visualização dessa seção, o atalho para ela fica na sidebar embaixo do Inbox. 
+Atualmente quando clico no botao de menu (hamburguer) nada acontece, Na versao mobile.
 
 @packages/web/src/app/tasks/page.tsx
 @packages/web/src/components/Sidebar.tsx
