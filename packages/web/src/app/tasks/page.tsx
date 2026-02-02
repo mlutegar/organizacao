@@ -7,9 +7,12 @@ import type { Database } from '@organizacao/shared'
 import styles from './tasks.module.css'
 import Sidebar from '@/components/Sidebar'
 import Timer from '@/components/Timer'
+import RouletteButton from '@/components/RouletteButton'
+import RouletteModal from '@/components/RouletteModal'
 
 type Task = Database['public']['Tables']['tasks']['Row']
 type Project = Database['public']['Tables']['projects']['Row']
+type RouletteItem = Database['public']['Tables']['roulette_items']['Row']
 type ViewMode = 'all' | 'today' | 'by-project' | 'inbox' | 'completed'
 
 export default function TasksPage() {
@@ -37,6 +40,8 @@ export default function TasksPage() {
   const [creatingProject, setCreatingProject] = useState(false)
   const [viewMode, setViewMode] = useState<ViewMode>('all')
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null)
+  const [isRouletteOpen, setIsRouletteOpen] = useState(false)
+  const [rouletteItems, setRouletteItems] = useState<RouletteItem[]>([])
   const router = useRouter()
   const supabase = createClient()
 
@@ -55,6 +60,7 @@ export default function TasksPage() {
     setUser(user)
     loadTasks()
     loadProjects()
+    loadRouletteItems()
 
     // Setup realtime subscription
     const channel = supabase
@@ -75,6 +81,28 @@ export default function TasksPage() {
 
     return () => {
       supabase.removeChannel(channel)
+    }
+
+    // Setup realtime subscription for roulette items
+    const rouletteChannel = supabase
+      .channel('roulette-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'roulette_items',
+          filter: `user_id=eq.${user?.id}`,
+        },
+        () => {
+          loadRouletteItems()
+        }
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+      supabase.removeChannel(rouletteChannel)
     }
   }
 
@@ -102,6 +130,19 @@ export default function TasksPage() {
       console.error('Erro ao carregar projetos:', error)
     } else {
       setProjects(data || [])
+    }
+  }
+
+  async function loadRouletteItems() {
+    const { data, error } = await supabase
+      .from('roulette_items')
+      .select('*')
+      .order('created_at', { ascending: true })
+
+    if (error) {
+      console.error('Erro ao carregar itens da roleta:', error)
+    } else {
+      setRouletteItems((data || []) as RouletteItem[])
     }
   }
 
@@ -714,6 +755,11 @@ export default function TasksPage() {
 
       <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)}>
         <div className={styles.sidebarContent}>
+          <RouletteButton
+            onOpen={() => setIsRouletteOpen(true)}
+            itemCount={rouletteItems.filter(item => !item.is_hidden).length}
+          />
+
           <Timer />
 
           {!showCreateForm && !showCreateProjectForm ? (
@@ -941,6 +987,12 @@ export default function TasksPage() {
           )}
         </div>
       </Sidebar>
+
+      <RouletteModal
+        isOpen={isRouletteOpen}
+        onClose={() => setIsRouletteOpen(false)}
+        user_id={user.id}
+      />
     </div>
   )
 }

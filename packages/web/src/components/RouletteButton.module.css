@@ -1,0 +1,40 @@
+.rouletteButton {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(240, 147, 251, 0.3);
+  margin-bottom: 20px;
+  position: relative;
+  width: 100%;
+}
+
+.rouletteButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(240, 147, 251, 0.4);
+}
+
+.rouletteButton:active {
+  transform: translateY(0);
+}
+
+.rouletteIcon {
+  font-size: 24px;
+}
+
+.itemCount {
+  margin-left: auto;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+}

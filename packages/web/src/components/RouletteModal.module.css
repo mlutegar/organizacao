@@ -1,0 +1,389 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modalContent {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 30px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.modalHeader h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: #333;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 32px;
+  color: #999;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.closeButton:hover {
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+.modalBody {
+  padding: 30px;
+}
+
+.wheelSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 30px;
+  padding-bottom: 30px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.wheelCanvas {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.spinButton {
+  padding: 16px 48px;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(240, 147, 251, 0.3);
+}
+
+.spinButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(240, 147, 251, 0.4);
+}
+
+.spinButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.resultBanner {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  width: 100%;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.resultBanner h3 {
+  margin: 0 0 12px 0;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.resultActions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.hideButton {
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.hideButton:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: #999;
+  font-size: 16px;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 40px 20px;
+  color: #999;
+}
+
+.emptyState p {
+  margin: 8px 0;
+  font-size: 16px;
+}
+
+.itemsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.sectionHeader h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #333;
+}
+
+.sectionActions {
+  display: flex;
+  gap: 8px;
+}
+
+.resetButton,
+.toggleVisibilityButton {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.resetButton {
+  background: #ffa726;
+  color: white;
+}
+
+.resetButton:hover {
+  background: #fb8c00;
+  transform: translateY(-1px);
+}
+
+.toggleVisibilityButton {
+  background: #667eea;
+  color: white;
+}
+
+.toggleVisibilityButton:hover {
+  background: #5568d3;
+  transform: translateY(-1px);
+}
+
+.addItemForm {
+  display: flex;
+  gap: 12px;
+}
+
+.itemInput {
+  flex: 1;
+  padding: 12px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.itemInput:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.addButton {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.addButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+}
+
+.addButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.itemsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.itemCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: #f9f9f9;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.itemCard:hover {
+  border-color: #667eea;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.itemCard.hidden {
+  opacity: 0.6;
+  background: #f0f0f0;
+}
+
+.itemColor {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+}
+
+.itemTitle {
+  flex: 1;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
+.hiddenBadge {
+  padding: 4px 10px;
+  background: #999;
+  color: white;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.itemActions {
+  display: flex;
+  gap: 8px;
+}
+
+.visibilityButton,
+.deleteButton {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 6px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.visibilityButton {
+  background: #e0e0e0;
+}
+
+.visibilityButton:hover {
+  background: #d0d0d0;
+  transform: scale(1.1);
+}
+
+.deleteButton {
+  background: #fee;
+  color: #dc2626;
+}
+
+.deleteButton:hover {
+  background: #fecaca;
+  transform: scale(1.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .modalContent {
+    max-width: 100%;
+    margin: 0;
+    border-radius: 0;
+    height: 100vh;
+    max-height: 100vh;
+  }
+
+  .wheelCanvas {
+    width: 300px;
+    height: 300px;
+  }
+
+  .sectionHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .addItemForm {
+    flex-direction: column;
+  }
+
+  .itemCard {
+    flex-wrap: wrap;
+  }
+}

@@ -2,93 +2,13 @@
 
 ## Tarefas soltas
 
-- Tirar a versão mobile, permanecer só com a versão desktop inicialmente.
+- 
 - A primeira tela de tarefas, tem que ser a tela "entrada", que está todas as tarefas que o usuario coloca. O ideal, é
   que esse campo seja vazio, mas aqui que o usuario vai colocar as tarefas de forma rapida. Mas, no final ele tem que
   tirar um tempo dele para se organizar certinho.
 - Criar um bot no whatsapp que ao falar com ele, ele cria a tarefa no supabase.
 ```
-Etapas:
 
-### 2. Configuração do WhatsApp Business API (Meta for Developers): https://developers.facebook.com/apps/996324246048889/use_cases/customize/?use_case_enum=WHATSAPP_BUSINESS_MESSAGING&selected_tab=wa-dev-quickstart&product_route=whatsapp-business&business_id=560518244609342
-
-#### Passo a Passo Detalhado:
-
-* [ ] **Adicionar o Produto WhatsApp**
-  - No painel do app, procure "WhatsApp" na lista de produtos
-  - Clique em "Configurar" ou "Adicionar ao App"
-  - Selecione ou crie uma **Business Account do WhatsApp**
-
-* [ ] **Configurar Número de Telefone**
-  - A Meta fornece um **número de teste temporário** automaticamente
-  - Anote o **Phone Number ID** (necessário para enviar mensagens)
-  - **Limitação importante:** O número de teste só funciona por 90 dias
-
-* [ ] **Obter Credenciais de API**
-  - Na seção "API Setup", copie:
-    - **Token de Acesso Temporário** (válido por 24-72h)
-    - **Phone Number ID**
-    - **WhatsApp Business Account ID**
-  - Para produção, você precisará gerar um **Token Permanente** depois
-
-* [ ] **Adicionar Números de Teste (Muito Importante!)**
-  - Vá em "API Setup" → "Para" (ou "To")
-  - Clique em "Adicionar número de telefone"
-  - Digite seu número com código do país (ex: +5521999999999)
-  - Você receberá um código via WhatsApp para verificar
-  - **Sem isso, não conseguirá receber mensagens de teste!**
-
-* [ ] **Testar Envio de Mensagem (Opcional)**
-  - Use a ferramenta "Send and receive messages" no painel
-  - Envie uma mensagem teste para seu número cadastrado
-  - Confirme que recebeu no WhatsApp
-
-#### Correções e Observações Importantes:
-
-1. **Tipo de App:** Pode ser "Outro" ou "Business", mas não precisa ser necessariamente "Business"
-2. **Token Temporário:** Expira em 24-72 horas, não é permanente
-3. **Número de Teste:** Funciona apenas por 90 dias e só com números cadastrados
-4. **Webhooks:** Você precisará configurar webhooks para receber mensagens (próximo passo)
-5. **Verificação de Negócio:** Para produção com número próprio, precisará de verificação Meta Business
-
-#### Próximos Passos Necessários:
-
-* [ ] Configurar Webhook para receber mensagens
-* [ ] Obter Token de Acesso Permanente (para produção)
-* [ ] Registrar número próprio (quando sair de teste)
-* [ ] Passar por Business Verification (para produção)
-
----
-
-### 3. Desenvolvimento do Backend (O "Bot")
-O WhatsApp não fala diretamente com o Supabase. Você precisa de um servidor (Node.js, Python ou Go) para receber a mensagem do WhatsApp e enviar para o Supabase.
-
-* [ ] **Inicializar Projeto:** Criar um servidor simples (recomendo **Node.js** com **Express** ou **Python** com **FastAPI**).
-* [ ] **Instalar Dependências:** Instalar SDK do Supabase e ferramentas para requisições web.
-* [ ] **Criar Rota de Verificação (Webhook GET):** O WhatsApp exige uma rota que retorne um `hub.challenge` para provar que o servidor é seu.
-* [ ] **Criar Rota de Recebimento (Webhook POST):**
-    * Receber o JSON do WhatsApp.
-    * Extrair a mensagem de texto e o número do remetente.
-    * *(Opcional)* Adicionar lógica de comando (ex: só criar tarefa se a mensagem começar com "Tarefa:").
-* [ ] **Integrar com Supabase:** Dentro da rota POST, usar o cliente do Supabase para fazer um `insert` na tabela `tasks` com o texto recebido.
-
----
-
-### 4. Conexão e Deploy (Ligar tudo)
-Para o WhatsApp enviar dados para o seu código, seu código precisa estar na internet (HTTPS), não apenas no seu computador (localhost).
-
-* [ ] **Expor Localhost (Dev):** Usar o **Ngrok** para criar um túnel HTTPS para sua máquina local (útil para desenvolver).
-* [ ] **Configurar Webhook na Meta:** Colocar a URL do Ngrok (ou do seu servidor de produção) no painel da Meta Developers.
-* [ ] **Testar o fluxo:** Enviar "Comprar leite" no WhatsApp -> Backend recebe -> Backend salva no Supabase.
-* [ ] **Deploy Final:** Subir seu código para um serviço de hospedagem (Vercel, Railway, Render ou Heroku) para que o bot funcione 24/7 sem seu PC estar ligado.
-
----
-
-### Resumo da Arquitetura
-
-> **Usuário** (WhatsApp) ➡️ **Meta Cloud API** (Webhook) ➡️ **Seu Código** (Node/Python) ➡️ **Supabase** (Database)
-
-**Gostaria que eu gerasse o código inicial do servidor em Node.js para você?**
 ```
 - Colocar todas as tarefas, de tudo, aqui.
 
