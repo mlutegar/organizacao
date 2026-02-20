@@ -25,6 +25,7 @@ export default function RouletteModal({ isOpen, onClose, user_id }: RouletteModa
   const [rotation, setRotation] = useState(0)
   const [loading, setLoading] = useState(true)
   const [creating, setCreating] = useState(false)
+  const [filtroLocal, setFiltroLocal] = useState<'todos' | 'rua' | 'trabalho'>('todos')
 
   // Color palette for wheel segments
   const colorPalette = [
@@ -39,14 +40,25 @@ export default function RouletteModal({ isOpen, onClose, user_id }: RouletteModa
     }
   }, [isOpen, user_id])
 
-  // Filter items based on visibility toggle
+  // Filter items based on visibility toggle, badges, and location filter
   useEffect(() => {
-    if (showHidden) {
-      setVisibleItems(items)
-    } else {
-      setVisibleItems(items.filter(item => !item.is_hidden))
+    let filtered = items
+
+    // Filter by is_hidden
+    if (!showHidden) {
+      filtered = filtered.filter(item => !item.is_hidden)
     }
-  }, [items, showHidden])
+
+    // Filter by location
+    if (filtroLocal === 'rua') {
+      filtered = filtered.filter(item => item.pode_rua)
+    } else if (filtroLocal === 'trabalho') {
+      filtered = filtered.filter(item => item.pode_trabalho)
+    }
+    // 'todos' não aplica filtro
+
+    setVisibleItems(filtered)
+  }, [items, showHidden, filtroLocal])
 
   // Draw wheel on canvas
   useEffect(() => {
@@ -85,6 +97,8 @@ export default function RouletteModal({ isOpen, onClose, user_id }: RouletteModa
         title: newItemTitle,
         color: colorPalette[colorIndex],
         user_id,
+        pode_rua: true,
+        pode_trabalho: true,
       })
 
     if (error) {
@@ -120,6 +134,25 @@ export default function RouletteModal({ isOpen, onClose, user_id }: RouletteModa
 
     if (error) {
       alert('Erro ao atualizar item: ' + error.message)
+    } else {
+      loadItems()
+    }
+  }
+
+  async function toggleBadge(itemId: string, badge: 'pode_rua' | 'pode_trabalho') {
+    // Primeiro, buscar o item atual para obter o valor
+    const item = items.find(i => i.id === itemId)
+    if (!item) return
+
+    const newValue = !item[badge]
+
+    const { error } = await supabase
+      .from('roulette_items')
+      .update({ [badge]: newValue })
+      .eq('id', itemId)
+
+    if (error) {
+      alert('Erro ao atualizar badge: ' + error.message)
     } else {
       loadItems()
     }
@@ -267,6 +300,30 @@ export default function RouletteModal({ isOpen, onClose, user_id }: RouletteModa
         </div>
 
         <div className={styles.modalBody}>
+          {/* Local Selector */}
+          <div className={styles.localSelector}>
+            <h4>Filtrar por local:</h4>
+            <div className={styles.localButtons}>
+              <button
+                className={`${styles.localButton} ${filtroLocal === 'todos' ? styles.active : ''}`}
+                onClick={() => setFiltroLocal('todos')}
+              >
+                🏠 Geral (Todos)
+              </button>
+              <button
+                className={`${styles.localButton} ${filtroLocal === 'rua' ? styles.active : ''}`}
+                onClick={() => setFiltroLocal('rua')}
+              >
+                🚗 Rua
+              </button>
+              <button
+                className={`${styles.localButton} ${filtroLocal === 'trabalho' ? styles.active : ''}`}
+                onClick={() => setFiltroLocal('trabalho')}
+              >
+                💼 Trabalho
+              </button>
+            </div>
+          </div>
           {/* Wheel Section */}
           {visibleItems.length > 0 && (
             <div className={styles.wheelSection}>
@@ -362,6 +419,23 @@ export default function RouletteModal({ isOpen, onClose, user_id }: RouletteModa
                     style={{ backgroundColor: item.color || undefined }}
                   />
                   <span className={styles.itemTitle}>{item.title}</span>
+                  {/* Location Badges */}
+                  <div className={styles.locationBadges}>
+                    <button
+                      className={`${styles.badgeButton} ${styles.badgeRua} ${item.pode_rua ? styles.checked : ''}`}
+                      onClick={() => toggleBadge(item.id, 'pode_rua')}
+                      title={item.pode_rua ? 'Pode fazer na rua' : 'Não pode fazer na rua'}
+                    >
+                      🚗 Rua
+                    </button>
+                    <button
+                      className={`${styles.badgeButton} ${styles.badgeTrabalho} ${item.pode_trabalho ? styles.checked : ''}`}
+                      onClick={() => toggleBadge(item.id, 'pode_trabalho')}
+                      title={item.pode_trabalho ? 'Pode fazer no trabalho' : 'Não pode fazer no trabalho'}
+                    >
+                      💼 Trabalho
+                    </button>
+                  </div>
                   {item.is_hidden && <span className={styles.hiddenBadge}>Oculto</span>}
                   <div className={styles.itemActions}>
                     <button

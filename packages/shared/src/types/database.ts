@@ -112,6 +112,8 @@ export interface Database {
           title: string
           color: string | null
           is_hidden: boolean
+          pode_rua: boolean
+          pode_trabalho: boolean
           created_at: string
           updated_at: string
         }
@@ -121,6 +123,8 @@ export interface Database {
           title: string
           color?: string | null
           is_hidden?: boolean
+          pode_rua?: boolean
+          pode_trabalho?: boolean
           created_at?: string
           updated_at?: string
         }
@@ -130,6 +134,8 @@ export interface Database {
           title?: string
           color?: string | null
           is_hidden?: boolean
+          pode_rua?: boolean
+          pode_trabalho?: boolean
           created_at?: string
           updated_at?: string
         }

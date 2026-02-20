@@ -62,6 +62,172 @@
   padding: 30px;
 }
 
+.typeSelector {
+  margin-bottom: 24px;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 12px;
+  border: 2px solid #e0e0e0;
+}
+
+.typeSelector h4 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.typeButtons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.typeButton {
+  flex: 1;
+  min-width: 140px;
+  padding: 14px 20px;
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.typeButton:hover {
+  border-color: #667eea;
+  background: #f0f4ff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.typeButton.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-color: #667eea;
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+}
+
+/* Local Selector (substitui typeSelector) */
+.localSelector {
+  margin-bottom: 24px;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 12px;
+  border: 2px solid #e0e0e0;
+}
+
+.localSelector h4 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.localButtons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.localButton {
+  flex: 1;
+  min-width: 140px;
+  padding: 14px 20px;
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.localButton:hover {
+  border-color: #667eea;
+  background: #f0f4ff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.localButton.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-color: #667eea;
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+}
+
+/* Location Badges Container */
+.locationBadges {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Individual Badge Buttons */
+.badgeButton {
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 2px solid;
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.badgeRua {
+  background: #f0f0f0;
+  border-color: #ccc;
+  color: #999;
+}
+
+.badgeRua.checked {
+  background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+  border-color: #19547b;
+  color: white;
+}
+
+.badgeTrabalho {
+  background: #f0f0f0;
+  border-color: #ccc;
+  color: #999;
+}
+
+.badgeTrabalho.checked {
+  background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+  border-color: #5f9ea0;
+  color: white;
+}
+
+.badgeButton:hover {
+  transform: scale(1.05);
+}
+
+.badgeButton:active {
+  transform: scale(0.98);
+}
+
 .wheelSection {
   display: flex;
   flex-direction: column;
@@ -381,6 +547,14 @@
 
   .addItemForm {
     flex-direction: column;
+  }
+
+  .localButtons {
+    flex-direction: column;
+  }
+
+  .localButton {
+    min-width: 100%;
   }
 
   .itemCard {
