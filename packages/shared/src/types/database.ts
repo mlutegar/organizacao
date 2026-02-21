@@ -114,6 +114,7 @@ export interface Database {
           is_hidden: boolean
           pode_rua: boolean
           pode_trabalho: boolean
+          peso: number
           created_at: string
           updated_at: string
         }
@@ -125,6 +126,7 @@ export interface Database {
           is_hidden?: boolean
           pode_rua?: boolean
           pode_trabalho?: boolean
+          peso?: number
           created_at?: string
           updated_at?: string
         }
@@ -136,6 +138,7 @@ export interface Database {
           is_hidden?: boolean
           pode_rua?: boolean
           pode_trabalho?: boolean
+          peso?: number
           created_at?: string
           updated_at?: string
         }

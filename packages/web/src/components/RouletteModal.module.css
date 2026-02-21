@@ -318,6 +318,31 @@
   transform: translateY(-2px);
 }
 
+.acceptButton {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.acceptButton:hover {
+  background: linear-gradient(135deg, #0d8a7f 0%, #32d670 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(17, 153, 142, 0.4);
+}
+
+.weightInfo {
+  margin: 8px 0 0 0;
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
 .loading {
   text-align: center;
   padding: 40px;
@@ -487,6 +512,18 @@
   font-weight: 600;
 }
 
+.weightIndicator {
+  padding: 4px 8px;
+  background: #f0f0f0;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
 .itemActions {
   display: flex;
   gap: 8px;
@@ -522,6 +559,26 @@
 
 .deleteButton:hover {
   background: #fecaca;
+  transform: scale(1.1);
+}
+
+.resetWeightButton {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 6px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff3cd;
+  color: #856404;
+}
+
+.resetWeightButton:hover {
+  background: #ffe69c;
   transform: scale(1.1);
 }
 

@@ -99,6 +99,7 @@ export default function RouletteModal({ isOpen, onClose, user_id }: RouletteModa
         user_id,
         pode_rua: true,
         pode_trabalho: true,
+        peso: 1,
       })
 
     if (error) {
@@ -153,6 +154,38 @@ export default function RouletteModal({ isOpen, onClose, user_id }: RouletteModa
 
     if (error) {
       alert('Erro ao atualizar badge: ' + error.message)
+    } else {
+      loadItems()
+    }
+  }
+
+  async function acceptTask(item: RouletteItem) {
+    const novoPeso = (item.peso || 1) + 1
+
+    const { error } = await supabase
+      .from('roulette_items')
+      .update({ peso: novoPeso })
+      .eq('id', item.id)
+
+    if (error) {
+      alert('Erro ao aceitar tarefa: ' + error.message)
+    } else {
+      loadItems()
+      // Opcional: mostrar confirmação visual
+      alert(`✅ Tarefa "${item.title}" aceita! Peso aumentado para ${novoPeso}`)
+    }
+  }
+
+  async function resetWeight(itemId: string) {
+    if (!confirm('Tem certeza que deseja resetar o peso para 1?')) return
+
+    const { error } = await supabase
+      .from('roulette_items')
+      .update({ peso: 1 })
+      .eq('id', itemId)
+
+    if (error) {
+      alert('Erro ao resetar peso: ' + error.message)
     } else {
       loadItems()
     }
@@ -251,12 +284,26 @@ export default function RouletteModal({ isOpen, onClose, user_id }: RouletteModa
     setIsSpinning(true)
     setSelectedItem(null)
 
-    // Random number of full rotations (5-10) + random segment
+    // Calcular peso total e selecionar item ponderado
+    const totalWeight = visibleItems.reduce((sum, item) => sum + (item.peso || 1), 0)
+
+    // Seleção ponderada pelo peso
+    let random = Math.random() * totalWeight
+    let selectedIndex = 0
+
+    for (let i = 0; i < visibleItems.length; i++) {
+      random -= visibleItems[i].peso || 1
+      if (random <= 0) {
+        selectedIndex = i
+        break
+      }
+    }
+
+    // Calcular ângulo de rotação
     const numSegments = visibleItems.length
     const segmentAngle = 360 / numSegments
-    const randomSegment = Math.floor(Math.random() * numSegments)
     const extraRotations = 360 * (5 + Math.floor(Math.random() * 5))
-    const targetAngle = extraRotations + (numSegments - randomSegment - 1) * segmentAngle
+    const targetAngle = extraRotations + (numSegments - selectedIndex - 1) * segmentAngle
 
     const startRotation = rotation % 360
     const totalRotation = startRotation + targetAngle
@@ -344,7 +391,14 @@ export default function RouletteModal({ isOpen, onClose, user_id }: RouletteModa
               {selectedItem && (
                 <div className={styles.resultBanner}>
                   <h3>🎉 Selecionado: {selectedItem.title}</h3>
+                  <p className={styles.weightInfo}>⚖️ Peso atual: {selectedItem.peso || 1}</p>
                   <div className={styles.resultActions}>
+                    <button
+                      onClick={() => acceptTask(selectedItem)}
+                      className={styles.acceptButton}
+                    >
+                      ✅ Aceitar (+1 peso)
+                    </button>
                     <button
                       onClick={() => toggleHideItem(selectedItem.id, selectedItem.is_hidden)}
                       className={styles.hideButton}
@@ -419,6 +473,7 @@ export default function RouletteModal({ isOpen, onClose, user_id }: RouletteModa
                     style={{ backgroundColor: item.color || undefined }}
                   />
                   <span className={styles.itemTitle}>{item.title}</span>
+                  <span className={styles.weightIndicator}>⚖️ {item.peso || 1}</span>
                   {/* Location Badges */}
                   <div className={styles.locationBadges}>
                     <button
@@ -438,6 +493,13 @@ export default function RouletteModal({ isOpen, onClose, user_id }: RouletteModa
                   </div>
                   {item.is_hidden && <span className={styles.hiddenBadge}>Oculto</span>}
                   <div className={styles.itemActions}>
+                    <button
+                      onClick={() => resetWeight(item.id)}
+                      className={styles.resetWeightButton}
+                      title="Resetar peso para 1"
+                    >
+                      ⚖️
+                    </button>
                     <button
                       onClick={() => toggleHideItem(item.id, item.is_hidden)}
                       className={styles.visibilityButton}
